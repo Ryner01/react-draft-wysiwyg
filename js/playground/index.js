@@ -104,6 +104,7 @@ class Playground extends Component {
           <div className="playground-editorWrapper">
             <Editor
               tabIndex={0}
+              locale="en"
               editorState={editorState}
               toolbarClassName="playground-toolbar"
               wrapperClassName="playground-wrapper"

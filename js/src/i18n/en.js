@@ -1,5 +1,7 @@
 module.exports = {
 
+  // FontFamily
+  'components.controls.fontfamily.fontfamily' : "Font Family",
 
   // Image
   'components.controls.image.fileUpload' : "File Upload",

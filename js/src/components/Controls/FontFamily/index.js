@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { Component, PropTypes } from 'react';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import {
   toggleCustomInlineStyle,
   getSelectionCustomInlineStyle,
@@ -9,7 +10,7 @@ import classNames from 'classnames';
 import { Dropdown, DropdownOption } from '../../Dropdown';
 import styles from './styles.css'; // eslint-disable-line no-unused-vars
 
-export default class FontFamily extends Component {
+class FontFamily extends Component {
 
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -55,6 +56,7 @@ export default class FontFamily extends Component {
 
   render() {
     let { currentFontFamily } = this.state;
+    const {formatMessage} = this.props.intl;
     const { config: { className, dropdownClassName, options }, modalHandler } = this.props;
     currentFontFamily =
       currentFontFamily && currentFontFamily.substring(11, currentFontFamily.length);
@@ -67,7 +69,7 @@ export default class FontFamily extends Component {
           optionWrapperClassName={classNames('rdw-fontfamily-optionwrapper', dropdownClassName)}
         >
           <span className="rdw-fontfamily-placeholder">
-            {currentFontFamily || 'Font Family'}
+            {currentFontFamily || formatMessage({ id:"components.controls.fontfamily.fontfamily"})}
           </span>
           {
             options.map((family, index) =>
@@ -84,3 +86,5 @@ export default class FontFamily extends Component {
     );
   }
 }
+
+export default injectIntl(FontFamily);
