@@ -13,21 +13,26 @@
   justify-content: center;
 }
 .rdw-right-aligned-block {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  text-align: right;
 }
 .rdw-left-aligned-block {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  text-align: left;
 }
 .rdw-center-aligned-block {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  text-align: center;
 }
 .rdw-justify-aligned-block {
-  display: flex;
-  flex-direction: row;
+  text-align: justify;
+}
+.rdw-right-aligned-block > div {
+  display: inline;
+}
+.rdw-left-aligned-block > div {
+  display: inline;
+}
+.rdw-center-aligned-block > div {
+  display: inline;
+}
+.rdw-justify-aligned-block > div {
+  display: inline;
 }

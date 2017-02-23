@@ -1,15 +1,15 @@
-import { Entity, ContentBlock } from 'draft-js';
 import Embedded from './Embedded';
 import getImageComponent from './Image';
 
-const getBlockRenderFunc = (config, customBlockRendererFunc) => {
+const getBlockRenderFunc = (config, customBlockRenderer, getEditorState) => {
   return (block) => {
-    if (typeof customBlockRendererFunc === 'function') {
-      const renderedComponent = customBlockRendererFunc(block, config);
+    if (typeof customBlockRenderer === 'function') {
+      const renderedComponent = customBlockRenderer(block, config, getEditorState);
       if (renderedComponent) return renderedComponent;
     }
     if (block.getType() === 'atomic') {
-      const entity = Entity.get(block.getEntityAt(0));
+      const contentState = getEditorState().getCurrentContent();
+      const entity = contentState.getEntity(block.getEntityAt(0));
       if (entity && entity.type === 'IMAGE') {
         return {
           component: getImageComponent(config),
@@ -23,7 +23,7 @@ const getBlockRenderFunc = (config, customBlockRendererFunc) => {
       }
     }
     return undefined;
-  }
-}
+  };
+};
 
 export default getBlockRenderFunc;

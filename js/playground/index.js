@@ -47,7 +47,7 @@ class Playground extends Component {
   state: any = {
     editorContent: undefined,
     contentState: rawContentState,
-    editorState: EditorState.createWithContent(contentState),
+    editorState: EditorState.createEmpty(),
   };
 
   onEditorChange: Function = (editorContent) => {
@@ -66,9 +66,9 @@ class Playground extends Component {
     console.log('contentState', contentState);
   };
 
-  onEditorStateChange: Function = (initEditorState) => {
+  onEditorStateChange: Function = (editorState) => {
     this.setState({
-      initEditorState,
+      editorState,
     });
   };
 
@@ -98,11 +98,14 @@ class Playground extends Component {
         <div className="playground-label">
           Toolbar is alwasy <sup>visible</sup>
         </div>
-        <button onClick={this.clearContent}>Force Editor State</button>
+        <button onClick={this.clearContent} tabIndex={0}>Force Editor State</button>
         <div className="playground-editorSection">
+          <input tabIndex={0} />
           <div className="playground-editorWrapper">
             <Editor
-              contentState={contentState}
+              tabIndex={0}
+              locale="en"
+              editorState={editorState}
               toolbarClassName="playground-toolbar"
               wrapperClassName="playground-wrapper"
               editorClassName="playground-editor"
@@ -114,16 +117,16 @@ class Playground extends Component {
               toolbarCustomButtons={[<TestOption />, <TestOption2 />]}
               onFocus={() => {console.log('focus')}}
               onBlur={() => {console.log('blur')}}
-              onBlur={() => {console.log('tab'); return true;}}
+              onTab={() => {console.log('tab'); return true;}}
               mention={{
                 separator: ' ',
                 trigger: '@',
                 caseSensitive: true,
                 suggestions: [
-                  { text: 'A', value: 'A', url: 'href-a' },
-                  { text: 'AB', value: 'AB', url: 'href-ab' },
-                  { text: 'ABC', value: 'ABC', url: 'href-abc' },
-                  { text: 'ABCD', value: 'ABCD', url: 'href-abcd' },
+                  { text: 'A', value: 'AB', url: 'href-a' },
+                  { text: 'AB', value: 'ABC', url: 'href-ab' },
+                  { text: 'ABC', value: 'ABCD', url: 'href-abc' },
+                  { text: 'ABCD', value: 'ABCDDDD', url: 'href-abcd' },
                   { text: 'ABCDE', value: 'ABCDE', url: 'href-abcde' },
                   { text: 'ABCDEF', value: 'ABCDEF', url: 'href-abcdef' },
                   { text: 'ABCDEFG', value: 'ABCDEFG', url: 'href-abcdefg' },
@@ -131,13 +134,14 @@ class Playground extends Component {
               }}
             />
           </div>
+          <input tabIndex={0} />
           <textarea
             className="playground-content no-focus"
-            value={draftToHtml(editorContent)}
+            value={draftToHtml(editorContent, {})}
           />
           <textarea
             className="playground-content no-focus"
-            value={draftToMarkdown(editorContent)}
+            value={draftToMarkdown(editorContent, {})}
           />
           <textarea
             className="playground-content no-focus"

@@ -1,13 +1,14 @@
 /* @flow */
 
 import React, { Component, PropTypes } from 'react';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Entity, AtomicBlockUtils } from 'draft-js';
 import classNames from 'classnames';
 import Option from '../../Option';
 import Spinner from '../../Spinner';
 import styles from './styles.css'; // eslint-disable-line no-unused-vars
 
-export default class ImageControl extends Component {
+class ImageControl extends Component {
 
   static propTypes: Object = {
     editorState: PropTypes.object.isRequired,
@@ -20,7 +21,7 @@ export default class ImageControl extends Component {
     imgSrc: '',
     showModal: false,
     dragEnter: false,
-    showImageUpload: !!this.props.config.uploadCallback,
+    uploadHighlighted: this.props.config.uploadEnabled && !!this.props.config.uploadCallback,
     showImageLoading: false,
     height: 'auto',
     width: '100%',
@@ -32,9 +33,10 @@ export default class ImageControl extends Component {
   }
 
   componentWillReceiveProps(properties: Object): void {
-    if (properties.config.uploadCallback !== this.props.config.uploadCallback) {
+    if (properties.config.uploadCallback !== this.props.config.uploadCallback ||
+      properties.config.uploadEnabled !== this.props.config.uploadEnabled) {
       this.setState({
-        showImageUpload: !!this.props.config.uploadCallback,
+        uploadHighlighted: properties.config.uploadEnabled && !!properties.config.uploadCallback,
       });
     }
   }
@@ -103,13 +105,13 @@ export default class ImageControl extends Component {
 
   showImageURLOption: Function = (): void => {
     this.setState({
-      showImageUpload: false,
+      uploadHighlighted: false,
     });
   };
 
   showImageUploadOption: Function = (): void => {
     this.setState({
-      showImageUpload: true,
+      uploadHighlighted: true,
     });
   };
 
@@ -117,7 +119,6 @@ export default class ImageControl extends Component {
     this.setState({
       showModal: false,
       imgSrc: undefined,
-      showImageUpload: !!this.props.config.uploadCallback,
     });
   };
 
@@ -125,7 +126,7 @@ export default class ImageControl extends Component {
     this.setState({
       showModal: this.signalShowModal,
       imgSrc: undefined,
-      showImageUpload: !!this.props.config.uploadCallback,
+      uploadHighlighted: this.props.config.uploadEnabled && !!this.props.config.uploadCallback,
     });
     this.signalShowModal = false;
   }
@@ -161,7 +162,10 @@ export default class ImageControl extends Component {
     const { editorState, onChange } = this.props;
     const src = imgSrc || this.state.imgSrc;
     const { height, width } = this.state;
-    const entityKey = Entity.create('IMAGE', 'MUTABLE', { src, height, width });
+    const entityKey = editorState
+      .getCurrentContent()
+      .createEntity('IMAGE', 'MUTABLE', { src, height, width })
+      .getLastCreatedEntityKey();
     const newEditorState = AtomicBlockUtils.insertAtomicBlock(
       editorState,
       entityKey,
@@ -186,45 +190,43 @@ export default class ImageControl extends Component {
   };
 
   renderAddImageModal(): Object {
-    const { imgSrc, showImageUpload, showImageLoading, dragEnter, height, width } = this.state;
-    const { config: { popupClassName, uploadCallback } } = this.props;
+    const { imgSrc, uploadHighlighted, showImageLoading, dragEnter, height, width } = this.state;
+    const { config: { popupClassName, uploadCallback, uploadEnabled, urlEnabled } } = this.props;
     return (
       <div
         className={classNames('rdw-image-modal', popupClassName)}
         onClick={this.stopPropagation}
       >
         <div className="rdw-image-modal-header">
-          {uploadCallback ?
+          {uploadEnabled && uploadCallback &&
             <span
               onClick={this.showImageUploadOption}
               className="rdw-image-modal-header-option"
             >
-              <span>File Upload</span>
+              <FormattedMessage id="components.controls.image.fileUpload" />
               <span
                 className={classNames(
                   'rdw-image-modal-header-label',
-                  { 'rdw-image-modal-header-label-highlighted': showImageUpload }
+                  { 'rdw-image-modal-header-label-highlighted': uploadHighlighted }
                 )}
               />
-            </span>
-            :
-            undefined
-          }
-          <span
-            onClick={this.showImageURLOption}
-            className="rdw-image-modal-header-option"
-          >
-            <span>URL</span>
+            </span>}
+          { urlEnabled &&
             <span
-              className={classNames(
-                'rdw-image-modal-header-label',
-                { 'rdw-image-modal-header-label-highlighted': !showImageUpload }
-              )}
-            />
-          </span>
+              onClick={this.showImageURLOption}
+              className="rdw-image-modal-header-option"
+            >
+              <FormattedMessage id="components.controls.image.byURL" />
+              <span
+                className={classNames(
+                  'rdw-image-modal-header-label',
+                  { 'rdw-image-modal-header-label-highlighted': !uploadHighlighted }
+                )}
+              />
+            </span>}
         </div>
         {
-          showImageUpload && uploadCallback ?
+          uploadHighlighted ?
             <div onClick={this.fileUploadClick}>
               <div
                 onDragEnter={this.onDragEnter}
@@ -238,7 +240,7 @@ export default class ImageControl extends Component {
                   htmlFor="file"
                   className="rdw-image-modal-upload-option-label"
                 >
-                  Drop the file or click to upload
+                  <FormattedMessage id="components.controls.image.dropFileText" />
                 </label>
               </div>
               <input
@@ -283,13 +285,13 @@ export default class ImageControl extends Component {
             onClick={this.addImageFromState}
             disabled={!imgSrc || !height || !width}
           >
-            Add
+            <FormattedMessage id="generic.add" />
           </button>
           <button
             className="rdw-image-modal-btn"
             onClick={this.hideModal}
           >
-            Cancel
+            <FormattedMessage id="generic.cancel" />
           </button>
         </span>
         {showImageLoading ?
@@ -326,3 +328,5 @@ export default class ImageControl extends Component {
     );
   }
 }
+
+export default injectIntl(ImageControl)
