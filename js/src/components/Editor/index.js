@@ -37,12 +37,15 @@ import '../../../../css/Draft.css';
 import { IntlProvider, addLocaleData} from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import fr from 'react-intl/locale-data/fr';
-addLocaleData([...en, ...fr]);
+import cs from 'react-intl/locale-data/cs';
+addLocaleData([...en, ...fr, ...cs]);
 import draftWysiwygTranslationsEN from '../../i18n/en';
 import draftWysiwygTranslationsFR from '../../i18n/fr';
+import draftWysiwygTranslationsCS from '../../i18n/fr';
 const translations = {
   "en": draftWysiwygTranslationsEN,
   "fr": draftWysiwygTranslationsFR,
+  "cs": draftWysiwygTranslationsCS
 }
 
 export default class WysiwygEditor extends Component {
