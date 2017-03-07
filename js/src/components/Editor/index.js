@@ -41,7 +41,7 @@ import cs from 'react-intl/locale-data/cs';
 addLocaleData([...en, ...fr, ...cs]);
 import draftWysiwygTranslationsEN from '../../i18n/en';
 import draftWysiwygTranslationsFR from '../../i18n/fr';
-import draftWysiwygTranslationsCS from '../../i18n/fr';
+import draftWysiwygTranslationsCS from '../../i18n/cs';
 const translations = {
   "en": draftWysiwygTranslationsEN,
   "fr": draftWysiwygTranslationsFR,
